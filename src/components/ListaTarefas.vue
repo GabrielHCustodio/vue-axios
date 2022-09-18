@@ -18,12 +18,17 @@
         v-for="tarefa in tarefas"
         :key="tarefa.id"
         :tarefa="tarefa"
+        @editar="selecionarEditarTarefa"
       />
     </ul>
 
     <p v-else>Nenhuma tarefa criada.</p>
 
-    <salvar-tarefas v-if="exibirFormulario" @criar="criarTarefa"/>
+    <salvar-tarefas 
+      v-if="exibirFormulario"
+      :tarefa="tarefaSelecionada"
+      @criar="criarTarefa"
+      @editar="editarTarefa"/>
   </div>
 </template>
 
@@ -44,6 +49,7 @@ export default {
     return {
       tarefas: [],
       exibirFormulario: false,
+      tarefaSelecionada: undefined
     };
   },
   created() {
@@ -55,8 +61,23 @@ export default {
     criarTarefa(tarefa) {
       axios.post(`${config.apiURL}/tarefas` , tarefa).then((response) => {
         this.tarefas.push(response.data)
-        this.exibirFormulario = false
+        this.resetar()
       })
+    },
+    editarTarefa(tarefa) {
+      axios.put(`${config.apiURL}/tarefas/${tarefa.id}` , tarefa).then(response => {
+        const indice = this.tarefas.findIndex( t => t.id === tarefa.id)
+        this.tarefas.splice(indice, 1, tarefa)
+        this.resetar()
+      })
+    },
+    resetar() {
+      this.tarefaSelecionada = undefined
+      this.exibirFormulario = false
+    },
+    selecionarEditarTarefa(tarefa) {
+      this.tarefaSelecionada = tarefa
+      this.exibirFormulario = true
     }
   }
 };

@@ -2,15 +2,14 @@
   <li class="list-group-item d-flex">
     <span>{{ tarefa.titulo }}</span>
     <span class="espacar"></span>
-    <button
-      class="btn btn-sm"
-      :class="classCSS"
-      :title="tituloBotao"
-    >
+    <button class="btn btn-sm" :class="classCSS" :title="tituloBotao">
       <i class="fa fa-check"></i>
     </button>
-    <button class="btn btn-primary btn-sm" title="Editar">
-      <i class="fa fa-pencil-alt"></i>
+    <button 
+      class="btn btn-primary btn-sm" 
+      title="Editar"
+      @click="$emit('editar', tarefa)">
+        <i class="fa fa-pencil-alt"></i>
     </button>
     <button class="btn btn-danger btn-sm" title="Deletar">
       <i class="fa fa-trash"></i>
@@ -42,7 +41,7 @@ export default {
 
 <style scoped>
 button {
-    margin-right: 8px;
+  margin-right: 8px;
 }
 
 .espacar {
