@@ -6,7 +6,10 @@
       </div>
 
       <div class="col-sm-2">
-        <button class="btn btn-primary float-right" @click="exibirFormularioTarefa">
+        <button
+          class="btn btn-primary float-right"
+          @click="exibirFormularioTarefa"
+        >
           <i class="fa fa-plus" style="margin-right: 8px"></i>
           <span>Criar</span>
         </button>
@@ -26,11 +29,12 @@
 
     <p v-else>Nenhuma tarefa criada.</p>
 
-    <salvar-tarefas 
+    <salvar-tarefas
       v-if="exibirFormulario"
       :tarefa="tarefaSelecionada"
       @criar="criarTarefa"
-      @editar="editarTarefa"/>
+      @editar="editarTarefa"
+    />
   </div>
 </template>
 
@@ -51,7 +55,7 @@ export default {
     return {
       tarefas: [],
       exibirFormulario: false,
-      tarefaSelecionada: undefined
+      tarefaSelecionada: undefined,
     };
   },
   created() {
@@ -61,56 +65,86 @@ export default {
   },
   computed: {
     tarefasOrdenadas() {
-      return this.tarefas.sort((t1, t2) => {
-        if(t1.concluido === t2.concluido) {
-          return t1.titulo < t2.titulo
-            ? -1
-            : t1.titulo > t2.titulo
-              ? 1
-              : 0
+      return this.tarefas.slice().sort((t1, t2) => {
+        if (t1.concluido === t2.concluido) {
+          return t1.titulo < t2.titulo ? -1 : t1.titulo > t2.titulo ? 1 : 0;
         }
-        return t1.concluido - t2.concluido
-      })
-    }
+        return t1.concluido - t2.concluido;
+      });
+    },
   },
   methods: {
     criarTarefa(tarefa) {
-      axios.post(`${config.apiURL}/tarefas` , tarefa).then((response) => {
+      /*axios.post(`${config.apiURL}/tarefas` , tarefa).then((response) => {
         this.tarefas.push(response.data)
         this.resetar()
-      })
+      })*/
+
+      /*axios.get('url', {objeto-de-config})
+      axios.post('url', {body}, {objeto-de-config})
+      axios.put('url', {body}, {objeto-de-config})
+      axios.delete('url', {objeto-de-config})*/
+
+      axios
+        .request({
+          method: "post",
+          baseURL: config.apiURL,
+          url: "/tarefas",
+          data: tarefa,
+        })
+        .then((response) => {
+          this.tarefas.push(response.data);
+          this.resetar();
+        });
     },
     deletarTarefa(tarefa) {
-      const confirmar = window.confirm(`Deseja deletar a tarefa "${tarefa.titulo}"?`)
-      if(confirmar) {
-        axios.delete(`${config.apiURL}/tarefas/${tarefa.id}` , tarefa).then(response => {
-          const indice = this.tarefas.findIndex( t => t.id === tarefa.id)
-          this.tarefas.splice(indice, 1)
-        })
+      const confirmar = window.confirm(
+        `Deseja deletar a tarefa "${tarefa.titulo}"?`
+      );
+      if (confirmar) {
+        /*axios
+          .delete(`${config.apiURL}/tarefas/${tarefa.id}`, tarefa)
+          .then((response) => {
+            const indice = this.tarefas.findIndex((t) => t.id === tarefa.id);
+            this.tarefas.splice(indice, 1);
+          });*/
+        axios
+          .request({
+            method: "delete",
+            baseURL: config.apiURL,
+            url: `/tarefas/${tarefa.id}`,
+            data: tarefa,
+          })
+          .then((response) => {
+            const indice = this.tarefas.findIndex((t) => t.id === tarefa.id);
+            this.tarefas.splice(indice, 1);
+          });
       }
     },
     editarTarefa(tarefa) {
-      axios.put(`${config.apiURL}/tarefas/${tarefa.id}` , tarefa).then(response => {
-        const indice = this.tarefas.findIndex( t => t.id === tarefa.id)
-        this.tarefas.splice(indice, 1, tarefa)
-        this.resetar()
-      })
+      axios
+        .put(`${config.apiURL}/tarefas/${tarefa.id}`, tarefa)
+        .then((response) => {
+          const indice = this.tarefas.findIndex((t) => t.id === tarefa.id);
+          this.tarefas.splice(indice, 1, tarefa);
+          this.resetar();
+        });
     },
     exibirFormularioTarefa() {
-      if(this.tarefaSelecionada) {
-        this.tarefaSelecionada = undefined
-        return
+      if (this.tarefaSelecionada) {
+        this.tarefaSelecionada = undefined;
+        return;
       }
-      this.exibirFormulario = !this.exibirFormulario
+      this.exibirFormulario = !this.exibirFormulario;
     },
     resetar() {
-      this.tarefaSelecionada = undefined
-      this.exibirFormulario = false
+      this.tarefaSelecionada = undefined;
+      this.exibirFormulario = false;
     },
     selecionarEditarTarefa(tarefa) {
-      this.tarefaSelecionada = tarefa
-      this.exibirFormulario = true
-    }
-  }
+      this.tarefaSelecionada = tarefa;
+      this.exibirFormulario = true;
+    },
+  },
 };
 </script>
