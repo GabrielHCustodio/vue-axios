@@ -27,7 +27,9 @@
       />
     </ul>
 
-    <p v-else>Nenhuma tarefa criada.</p>
+    <p v-else-if="!mensagemErro">Nenhuma tarefa criada.</p>
+
+    <div class="alert alert-danger" v-else>{{ mensagemErro }}</div>
 
     <salvar-tarefas
       v-if="exibirFormulario"
@@ -56,12 +58,31 @@ export default {
       tarefas: [],
       exibirFormulario: false,
       tarefaSelecionada: undefined,
+      mensagemErro: ''
     };
   },
   created() {
     axios.get(`${config.apiURL}/tarefas`).then((response) => {
       this.tarefas = response.data;
-    });
+      return 'Resposta sucesso'
+    }, error => {
+      console.log('Erro capturado no then : ', error)
+      return Promise.reject(error)
+    }).catch( error => {
+      console.log('Erro capturado no catch : ', error)
+      if(error.response) {
+        this.mensagemErro = `Servidor retornou um erro: ${error.mensage} ${error.response.status}`
+        console.log('Erro [resposta]: ', error.response)
+      }else if(error.request) {
+        this.mensagemErro = `Erro de comunicação com o servidor: ${error.mensage} ${error.response.status}`
+        console.log('Erro [request]: ', error.request)
+      }else {
+        this.mensagemErro = `Erro ao fazer requisição ao servidor: ${error.mensage} ${error.response.status}`
+      }
+      return 'Resposta catch'
+    }).then((msg) => {
+      console.log('Executado ', msg)
+    })
   },
   computed: {
     tarefasOrdenadas() {
