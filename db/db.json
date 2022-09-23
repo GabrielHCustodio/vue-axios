@@ -1,13 +1,8 @@
 {
   "tarefas": [
     {
-      "titulo": "Aprender Axios",
-      "concluido": false,
-      "id": 3
-    },
-    {
       "titulo": "Aprender JavaScript",
-      "concluido": true,
+      "concluido": false,
       "id": 5
     },
     {
@@ -17,8 +12,23 @@
     },
     {
       "titulo": "Aprender Vue",
-      "concluido": false,
+      "concluido": true,
       "id": 7
+    },
+    {
+      "titulo": "Aprender Vuex",
+      "concluido": true,
+      "id": 8
+    },
+    {
+      "titulo": "Aprender Axios",
+      "concluido": false,
+      "id": 9
+    },
+    {
+      "titulo": "Aprender PHP Laravel",
+      "concluido": true,
+      "id": 10
     }
   ]
 }

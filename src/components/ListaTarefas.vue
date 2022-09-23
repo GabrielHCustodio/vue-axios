@@ -41,9 +41,8 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "@/axios";
 
-import config from "@/config/config";
 import ListaItemTarefas from "@/components/ListaItemTarefas.vue";
 import SalvarTarefas from "@/components/SalvarTarefas.vue";
 
@@ -62,7 +61,7 @@ export default {
     };
   },
   created() {
-    axios.get(`${config.apiURL}/tarefas`).then((response) => {
+    axios.get(`tarefas`).then((response) => {
       this.tarefas = response.data;
       return 'Resposta sucesso'
     }, error => {
@@ -96,7 +95,7 @@ export default {
   },
   methods: {
     criarTarefa(tarefa) {
-      /*axios.post(`${config.apiURL}/tarefas` , tarefa).then((response) => {
+      /*axios.post(`tarefas` , tarefa).then((response) => {
         this.tarefas.push(response.data)
         this.resetar()
       })*/
@@ -109,7 +108,6 @@ export default {
       axios
         .request({
           method: "post",
-          baseURL: config.apiURL,
           url: "/tarefas",
           data: tarefa,
         })
@@ -124,7 +122,7 @@ export default {
       );
       if (confirmar) {
         /*axios
-          .delete(`${config.apiURL}/tarefas/${tarefa.id}`, tarefa)
+          .delete(`tarefas/${tarefa.id}`, tarefa)
           .then((response) => {
             const indice = this.tarefas.findIndex((t) => t.id === tarefa.id);
             this.tarefas.splice(indice, 1);
@@ -132,7 +130,6 @@ export default {
         axios
           .request({
             method: "delete",
-            baseURL: config.apiURL,
             url: `/tarefas/${tarefa.id}`,
             data: tarefa,
           })
@@ -144,7 +141,7 @@ export default {
     },
     editarTarefa(tarefa) {
       axios
-        .put(`${config.apiURL}/tarefas/${tarefa.id}`, tarefa)
+        .put(`tarefas/${tarefa.id}`, tarefa)
         .then((response) => {
           const indice = this.tarefas.findIndex((t) => t.id === tarefa.id);
           this.tarefas.splice(indice, 1, tarefa);
