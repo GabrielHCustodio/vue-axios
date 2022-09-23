@@ -14,7 +14,7 @@ instance.interceptors.request.use(config => {
     config.headers.put['Authorization_Put'] = 'Token_jwt put'
 
     return config
-    
+
     /*return new Promise( (resolve, reject) => {
         console.log('Aguarde, fazendo requisição...')
         setTimeout(() => {
@@ -24,6 +24,17 @@ instance.interceptors.request.use(config => {
     })*/
 }, error => {
     console.log('Erro ao fazer requisição: ', error)
+    return Promise.reject(error)
+})
+
+instance.interceptors.response.use(response => {
+    console.log('Interceptando resposta :', response)
+    if(Array.isArray(response.data)) {
+        response.data = response.data.slice(0,3)
+    }
+    return response
+}, error => {
+    console.log('Erro capturado na resposta :', error)
     return Promise.reject(error)
 })
 
